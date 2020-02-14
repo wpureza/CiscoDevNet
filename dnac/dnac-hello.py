@@ -44,7 +44,7 @@ def get_auth_token(controller_ip=DNAC, username=DNAC_USER, password=DNAC_PASSWOR
 def list_network_devices():
     return get_url("network-device")
 
-if __name__ == "__main__":
+def devicesTable():
     devices = list_network_devices()
     print("{0:42}{1:17}{2:12}{3:18}{4:12}{5:16}{6:15}".
           format("hostname", "mgmt IP", "serial",
@@ -58,3 +58,24 @@ if __name__ == "__main__":
                      dev['platformId'],
                      dev['softwareVersion'],
                      dev['role'], uptime))
+
+def ip_to_id(ip):
+    return get_url("network-device/ip-address/%s" % ip)['response']['id']
+
+def get_modules(id):
+   return get_url("network-device/module?deviceId=%s" % id)
+
+def print_info(modules):
+    print("{0:30}{1:15}{2:25}{3:5}".format("Module Name","Serial Number","Part Number","Is Field Replaceable?"))
+    for module in modules['response']:
+        print("{moduleName:30}{serialNumber:15}{partNumber:25}{moduleType:5}".format(moduleName=module['name'],
+                                                           serialNumber=module['serialNumber'],
+                                                           partNumber=module['partNumber'],
+                                                           moduleType=module['isFieldReplaceable']))
+
+if __name__ == "__main__":
+    devicesTable()
+    ip = '10.10.22.253'
+    id = ip_to_id(ip)
+    modules = get_modules(id)
+    print_info(modules)
