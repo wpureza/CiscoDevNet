@@ -1,0 +1,13 @@
+from acitoolkit import acitoolkit
+
+URL = 'https://sandboxapicdc.cisco.com'
+LOGIN = 'admin'
+PASSWORD = 'ciscopsdt'
+
+session = acitoolkit.Session(URL, LOGIN, PASSWORD)
+session.login()
+
+tenant_name = 'INITIALS_Toolkit_Tenant'
+new_tenant = acitoolkit.Tenant(tenant_name)
+print(new_tenant.get_url(), new_tenant.get_json())
+session.push_to_apic(new_tenant.get_url(), new_tenant.get_json())
